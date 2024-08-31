@@ -1,6 +1,5 @@
 import { ethers } from "hardhat";
-import { Contract } from "ethers";
-
+import { ContractFactory, Contract } from 'ethers';
 async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with the account:", deployer.address);
@@ -8,11 +7,13 @@ async function main() {
   // Get the ContractFactory for EtherStaking
   const EtherStaking = await ethers.getContractFactory("EtherStaking");
 
-  // Deploy the contract and cast it explicitly to Contract
-  const etherStaking = (await EtherStaking.deploy()) as unknown as Contract;
-  await etherStaking.deployed();
+  // Deploy the contract
+  const etherStaking = await EtherStaking.deploy();
 
-  console.log("EtherStaking deployed to:", etherStaking.address);
+  // Ensure the contract is deployed
+  await etherStaking.waitForDeployment();
+
+  console.log("EtherStaking deployed to:", etherStaking.target);
 }
 
 main()
